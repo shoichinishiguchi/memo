@@ -19,16 +19,16 @@
 <h2>Practice</h2>
 <pre>
 <?php
-  try {
+  try{
     $db = new PDO('mysql:dbname=mydb; host=localhost; charset=utf8','root','root');
-  } catch (PDOException $e) {
-    echo 'DB接続エラー: ' . $e->getMessage();
+} catch (PDOException $e){
+    echo 'DB接続エラー:'. $e->getMessage();
   }
 
-  $records =  $db->query('SELECT COUNT(*) AS record_count FROM my_items');
-  while ($record = $records->fetch()){
-    echo $record['record_count']."件です\n";
-  }
+  $statement = $db->prepare('INSERT INTO memos SET memo=?, created_at=NOW()');
+  $statement->execute(array($_POST['memo']));
+  echo 'メッセージが登録されました';
+
 ?>
 </pre>
 </main>
