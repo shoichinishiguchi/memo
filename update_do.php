@@ -1,3 +1,4 @@
+<?php require('dbconnect.php'); ?>
 <!doctype html>
 <html lang="ja">
 <head>
@@ -17,11 +18,12 @@
 
 <main>
 <h2>Practice</h2>
-<form action="input_do.php" method="POST">
-  <textarea name="memo" cols="50" rows="10" placeholder="自由にメモを残してください。"></textarea><br>
-  <button type="submit">登録する</button>
-</form>
-<a href="index.php">indexへ</a>
+  <?php
+  $statement = $db -> prepare('UPDATE memos SET memo=? WHERE id=?');
+  $statement -> execute(array($_POST['memo'], $_POST['id']));
+  ?>
+  <p>メモの内容を変更しました</p>
+  <p><a href="index.php">戻る</a></p>
 </main>
 </body>
 </html>

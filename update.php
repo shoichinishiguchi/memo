@@ -1,3 +1,4 @@
+<?php require('dbconnect.php'); ?>
 <!doctype html>
 <html lang="ja">
 <head>
@@ -17,8 +18,17 @@
 
 <main>
 <h2>Practice</h2>
-<form action="input_do.php" method="POST">
-  <textarea name="memo" cols="50" rows="10" placeholder="自由にメモを残してください。"></textarea><br>
+<?php
+if (isset($_GET['id']) && is_numeric($_GET['id'])){
+    $id = $_GET['id'];
+$memos = $db ->prepare('SELECT * FROM memos WHERE id=?');
+$memos -> execute(array($id));
+$memo = $memos -> fetch();
+}
+?>
+<form action="update_do.php" method="POST">
+  <input type="hidden" name="id"  value="<?php echo $id; ?>">
+  <textarea name="memo" cols="50" rows="10"><?php echo $memo['memo'];?></textarea><br>
   <button type="submit">登録する</button>
 </form>
 <a href="index.php">indexへ</a>

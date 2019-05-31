@@ -1,3 +1,4 @@
+<?php require('dbconnect.php'); ?>
 <!doctype html>
 <html lang="ja">
 <head>
@@ -17,11 +18,15 @@
 
 <main>
 <h2>Practice</h2>
-<form action="input_do.php" method="POST">
-  <textarea name="memo" cols="50" rows="10" placeholder="自由にメモを残してください。"></textarea><br>
-  <button type="submit">登録する</button>
-</form>
-<a href="index.php">indexへ</a>
+  <?php
+  if (isset($_GET['id'])&& is_numeric($_GET['id'])){
+    $id = $_GET['id'];
+    $statement = $db -> prepare('DELETE FROM memos WHERE id=?');
+    $statement -> execute(array($id));
+  }
+  ?>
+  <p>メモの内容を削除しました</p>
+  <p><a href="index.php">戻る</a></p>
 </main>
 </body>
 </html>

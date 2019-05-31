@@ -1,3 +1,5 @@
+<?php require('dbconnect.php'); ?>
+<?php require('dbconnect.php'); ?>
 <!doctype html>
 <html lang="ja">
 <head>
@@ -6,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="style.css">
 
 <title>よくわかるPHPの教科書</title>
 </head>
@@ -19,17 +21,13 @@
 <h2>Practice</h2>
 <pre>
 <?php
-  try{
-    $db = new PDO('mysql:dbname=mydb; host=localhost; charset=utf8','root','root');
-} catch (PDOException $e){
-    echo 'DB接続エラー:'. $e->getMessage();
-  }
 
-  $statement = $db->prepare('INSERT INTO memos SET memo=?, created_at=NOW()');
-  $statement->execute(array($_POST['memo']));
-  echo 'メッセージが登録されました';
-
+  $statment = $db -> prepare('INSERT INTO memos SET memo=?, created_at=NOW()');
+  $statment -> bindParam(1, $_POST['memo']);
+  $statment -> execute();
+  echo 'メッセージが登録されました。'
 ?>
+<a href="input.html">戻る</a>
 </pre>
 </main>
 </body>

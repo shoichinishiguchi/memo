@@ -1,3 +1,4 @@
+<?php require('dbconnect.php'); ?>
 <!doctype html>
 <html lang="ja">
 <head>
@@ -6,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 <!-- Bootstrap CSS -->
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="style.css">
 
 <title>よくわかるPHPの教科書</title>
 </head>
@@ -17,20 +18,39 @@
 
 <main>
 <h2>Practice</h2>
-<pre>
 <?php
-  try {
-    $db = new PDO('mysql:dbname=mydb; host=localhost; charset=utf8','root','root');
-  } catch (PDOException $e) {
-    echo 'DB接続エラー: ' . $e->getMessage();
+  $counts = $db -> query('SELECT COUNT(*) as cnt FROM memos');
+  $count = $counts -> fetch();
+  $max_page = floor($count['cnt']/5) + 1;
+  if (isset($_GET['page'])&& is_numeric($_GET['page'])){
+    $page = $_GET['page'];
+  } else{
+    $page = 1;
   }
-
-  $records =  $db->query('SELECT COUNT(*) AS record_count FROM my_items');
-  while ($record = $records->fetch()){
-    echo $record['record_count']."件です\n";
-  }
+  $start = 5 * ($page - 1);
+  $memos = $db->prepare('SELECT * FROM memos ORDER BY id DESC LIMIT ?,5');
+  $memos -> bindParam(1, $start, PDO::PARAM_INT);
+  $memos -> execute();
 ?>
-</pre>
+<article>
+<?php while ( $memo = $memos -> fetch()): ?>
+  <p><a href="memo.php?id=<?php echo $memo['id'];?>">
+    <?php $security_memo=htmlspecialchars($memo['memo']); ?>
+    <?php echo mb_substr($security_memo, 0 , 50); ?>
+    <?php echo (mb_strlen($security_memo) > 50? '...': ''); ?>
+  </a></p>
+  <time><?php echo $memo['created_at']; ?></time>
+  <hr>
+<?php endwhile; ?>
+<?php if ($page >= 2): ?>
+<a href="index.php?page=<?php echo ($page-1); ?>"><?php echo ($page-1) ?>ページ目へ</a>
+<?php endif; ?>
+<span><?php echo $page."ページ"; ?></span>
+<?php if($page < $max_page): ?>
+<a href="index.php?page=<?php echo ($page+1); ?>"><?php echo ($page+1) ?>ページ目へ</a>
+<?php endif; ?>
+</article>
+<a href="input.html">メモする！！</a>
 </main>
 </body>
 </html>
